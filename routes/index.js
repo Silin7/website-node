@@ -11,11 +11,13 @@ const loginRouter = require("./components/login-router");
 const systemRouter = require("./components/system-router");
 const websitePagesRouter = require("./components/website-pages-router");
 const websiteTemplateRouter = require("./components/website-template-router");
+const templateTextRouter = require("./components/template-text-router");
 
 Router
   .use(loginRouter)
   .use(systemRouter)
   .use("/website-pages", websitePagesRouter)
   .use("/website-template", websiteTemplateRouter)
+  .use("/template-text", templateTextRouter)
 
 module.exports = Router;
