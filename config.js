@@ -16,9 +16,9 @@ module.exports = {
     // 数据库连接设置
     connectionLimit: 10,
     host: "39.106.44.146",
-    user: "Silin7",
-    password: "Wsl6714785@",
-    database: "website",
+    user: "website-sql",
+    password: "wsl6714785",
+    database: "website-sql",
     timezone: "+08:00",
   },
 };

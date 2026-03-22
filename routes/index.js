@@ -16,6 +16,7 @@ const babyMedicationRouter = require("./components/baby-medication-router");
 const babyPoopRouter = require("./components/baby-poop-router");
 const babySleepRouter = require("./components/baby-sleep-router");
 const babyTemperatureRouter = require("./components/baby-temperature-router");
+const websitePagesRouter = require("./components/website-pages-router");
 
 Router
   .use(babyRouter)
@@ -27,5 +28,6 @@ Router
   .use(babyPoopRouter)
   .use(babySleepRouter)
   .use(babyTemperatureRouter)
+  .use(websitePagesRouter)
 
 module.exports = Router;
