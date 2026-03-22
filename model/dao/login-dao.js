@@ -7,44 +7,43 @@
 const db = require("../mySQL");
 
 module.exports = {
-  // 根据openid检索用户信息
-  basedOpenid: async (openid) => {
-    let sql = "SELECT * FROM user_info WHERE openid = ?";
-    const result = await db.query(sql, [openid]);
+  // 根据账号检索用户信息
+  basedAccount: async (account) => {
+    let sql = "SELECT * FROM sys_user WHERE account = ?";
+    const result = await db.query(sql, [account]);
     return result;
   },
 
   // 登录
-  signInster: async (openid, phone) => {
-    let sql = "SELECT * FROM user_info WHERE openid = ? AND phone = ?";
-    return await db.query(sql, [openid, phone]);
+  signInster: async (account, password) => {
+    let sql = "SELECT * FROM sys_user WHERE account = ? AND `password` = ?";
+    return await db.query(sql, [account, password]);
   },
 
   // 注册
-  registerInster: async (openid, phone, nickname, avatar) => {
-    let sql = "INSERT INTO user_info (openid, phone, nickname, avatar) VALUES (?, ?, ?, ?)";
-    const result = await db.query(sql, [openid, phone, nickname, avatar]);
+  registerInster: async (username, account, password) => {
+    let sql = "INSERT INTO sys_user (username, account, `password`) VALUES (?, ?, ?)";
+    const result = await db.query(sql, [username, account, password]);
     return result;
   },
 
   // 获取用户基本信息
-  userInformation: async (openid) => {
-    // let sql = "SELECT user_info.*, family_member.familyid FROM user_info JOIN family_member ON user_info.openid = family_member.member WHERE user_info.openid = ?";
-    let sql = "SELECT * FROM user_info WHERE openid = ?";
-    const result = await db.query(sql, [openid]);
+  userInformation: async (id) => {
+    let sql = "SELECT * FROM sys_user WHERE id = ?";
+    const result = await db.query(sql, [id]);
     return result;
   },
 
   // 更新用户信息
   updateUserInfo: async (userInfo) => {
-    let sql = "UPDATE user_info SET phone = ?, nickname = ?, avatar = ? WHERE user_info.id = ?";
-    const result = await db.query(sql, [userInfo.phone, userInfo.nickname, userInfo.avatar, userInfo.id]);
+    let sql = "UPDATE sys_user SET username = ?, account = ?, `password` = ? WHERE id = ?";
+    const result = await db.query(sql, [userInfo.username, userInfo.account, userInfo.password, userInfo.id]);
     return result;
   },
 
   // 获取用户列表
   getUserList: async () => {
-    let sql = "SELECT * FROM user_info";
+    let sql = "SELECT * FROM sys_user";
     const result = await db.query(sql);
     return result;
   },

@@ -8,7 +8,6 @@ const express = require("express");
 const Router = express.Router();
 
 const loginRouter = require("./components/login-router");
-const systemRouter = require("./components/system-router");
 const websitePagesRouter = require("./components/website-pages-router");
 const websiteTemplateRouter = require("./components/website-template-router");
 const templateTextRouter = require("./components/template-text-router");
@@ -17,11 +16,10 @@ const templateCarouselRouter = require("./components/template-carousel-router");
 
 Router
   .use(loginRouter)
-  .use(systemRouter)
-  .use("/website-pages", websitePagesRouter)
-  .use("/website-template", websiteTemplateRouter)
-  .use("/template-text", templateTextRouter)
-  .use("/template-image", templateImageRouter)
-  .use("/template-carousel", templateCarouselRouter)
+  .use(websitePagesRouter)
+  .use(websiteTemplateRouter)
+  .use(templateTextRouter)
+  .use(templateImageRouter)
+  .use(templateCarouselRouter)
 
 module.exports = Router;

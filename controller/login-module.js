@@ -10,15 +10,15 @@ const checkToken = require("./system/check-token");
 const { sendResponse, sendSuccess, handleError, validateParams, advancedValidate } = require("./utils/response-util");
 
 
-// 根据openid检索用户信息
-const basedOpenid = async (req, res, next) => {
+// 根据账号检索用户信息
+const basedAccount = async (req, res, next) => {
   try {
-    const { openid } = req.query;
-    if (!advancedValidate(res, { openid }, { openid: { required: true } })) {
+    const { account } = req.query;
+    if (!advancedValidate(res, { account }, { account: { required: true } })) {
       return;
     }
 
-    const result = await loginDao.basedOpenid(openid);
+    const result = await loginDao.basedAccount(account);
     sendSuccess(res, result[0] || {}, "操作成功");
   } catch (error) {
     handleError(res, error, "检索用户信息失败");
@@ -28,22 +28,22 @@ const basedOpenid = async (req, res, next) => {
 // 登录
 const signInster = async (req, res, next) => {
   try {
-    const { openid, phone } = req.body;
-    if (!advancedValidate(res, { openid, phone }, {
-      openid: { required: true },
-      phone: { required: true }
+    const { account, password } = req.body;
+    if (!advancedValidate(res, { account, password }, {
+      account: { required: true },
+      password: { required: true }
     })) {
       return;
     }
 
-    const result = await loginDao.signInster(openid, phone);
+    const result = await loginDao.signInster(account, password);
     const userInfo = result[0] || null;
 
     if (userInfo) {
-      const token = generateToken.setToken(openid);
+      const token = generateToken.setToken(account);
       sendSuccess(res, { token, userInfo }, "登录成功");
     } else {
-      sendResponse(res, 401, false, "未查询到用户信息");
+      sendResponse(res, 401, false, "账号或密码错误");
     }
   } catch (error) {
     handleError(res, error, "登录失败");
@@ -53,21 +53,20 @@ const signInster = async (req, res, next) => {
 // 注册
 const registerInster = async (req, res, next) => {
   try {
-    const { openid, phone, nickname, avatar } = req.body;
-    if (!advancedValidate(res, { openid, phone, nickname, avatar }, {
-      openid: { required: true },
-      phone: { required: true },
-      nickname: { required: true },
-      avatar: { required: false }
-    })) {
+    const { username, account, password } = req.body;
+
+    // 检查账号是否已存在
+    const existingUser = await loginDao.basedAccount(account);
+
+    if (existingUser.length > 0) {
+      sendResponse(res, 400, false, "账号已存在");
       return;
     }
 
     // 注册用户
-    await loginDao.registerInster(openid, phone, nickname, avatar);
+    await loginDao.registerInster(username, account, password);
 
-    const token = generateToken.setToken(openid);
-    sendSuccess(res, { token }, "注册成功");
+    sendSuccess(res, null, "注册成功");
   } catch (error) {
     handleError(res, error, "注册失败");
   }
@@ -81,10 +80,13 @@ const userInformation = async (req, res, next) => {
       return sendResponse(res, 401, false, "请登录后操作");
     }
 
-    const { openid } = req.query;
-    const targetOpenid = openid || Authorization;
+    const { id } = req.query;
+    if (!id) {
+      sendResponse(res, 400, false, "缺少用户ID");
+      return;
+    }
 
-    const result = await loginDao.userInformation(targetOpenid);
+    const result = await loginDao.userInformation(id);
     if (result.length > 0) {
       sendSuccess(res, result[0], "操作成功");
     } else {
@@ -106,10 +108,17 @@ const updateUserInfo = async (req, res, next) => {
     const params = req.body;
     if (!advancedValidate(res, params, {
       id: { required: true },
-      phone: { required: true },
-      nickname: { required: true },
-      avatar: { required: true }
+      username: { required: true },
+      account: { required: true },
+      password: { required: true }
     })) {
+      return;
+    }
+
+    // 检查账号是否已存在（排除当前用户）
+    const existingUser = await loginDao.basedAccount(params.account);
+    if (existingUser.length > 0 && existingUser[0].id != params.id) {
+      sendResponse(res, 400, false, "账号已存在");
       return;
     }
 
@@ -131,7 +140,7 @@ const checkTokenFunc = async (req, res, next) => {
 };
 
 module.exports = {
-  basedOpenid,
+  basedAccount,
   signInster,
   registerInster,
   userInformation,

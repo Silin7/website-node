@@ -10,7 +10,7 @@ const loginModule = require("../../controller/login-module");
 let loginRouter = express.Router();
 
 loginRouter
-  .get("/login/based/openid", loginModule.basedOpenid)
+  .get("/login/based/account", loginModule.basedAccount)
   .post("/login/sign/in", loginModule.signInster)
   .post("/login/register/inster", loginModule.registerInster)
   .get("/login/user/information", loginModule.userInformation)
