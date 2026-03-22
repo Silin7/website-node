@@ -10,10 +10,12 @@ const Router = express.Router();
 const loginRouter = require("./components/login-router");
 const systemRouter = require("./components/system-router");
 const websitePagesRouter = require("./components/website-pages-router");
+const websiteTemplateRouter = require("./components/website-template-router");
 
 Router
   .use(loginRouter)
   .use(systemRouter)
-  .use(websitePagesRouter)
+  .use("/website-pages", websitePagesRouter)
+  .use("/website-template", websiteTemplateRouter)
 
 module.exports = Router;
