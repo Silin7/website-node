@@ -12,6 +12,7 @@ const systemRouter = require("./components/system-router");
 const websitePagesRouter = require("./components/website-pages-router");
 const websiteTemplateRouter = require("./components/website-template-router");
 const templateTextRouter = require("./components/template-text-router");
+const templateImageRouter = require("./components/template-image-router");
 
 Router
   .use(loginRouter)
@@ -19,5 +20,6 @@ Router
   .use("/website-pages", websitePagesRouter)
   .use("/website-template", websiteTemplateRouter)
   .use("/template-text", templateTextRouter)
+  .use("/template-image", templateImageRouter)
 
 module.exports = Router;
